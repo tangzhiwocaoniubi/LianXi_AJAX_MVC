@@ -1,0 +1,100 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>FenYe</title>
+</head>
+<body>
+    <div>
+        <table border="1" cellpadding="0" cellspacing="0" style="border:1px solid #0094ff">
+            <thead>
+                <tr>
+                    <td>编号</td>
+                    <td>姓名</td>
+                    <td>年龄</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody id="tb1">
+
+            </tbody>
+        </table>
+        <div id="demopagelist"></div>
+        @*<input id="Button1" type="button" value="首页"  />
+        
+        <input id="Button2" type="button" value="上一页" />
+        <input id="Button3" type="button" value="下一页" />
+        <input id="Button4" type="button" value="尾页" />*@
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script src="~/layui-v2.5.7/layui/layui.js"></script>
+<script>
+    var PageIndex = 1;
+    var PageSize = 3;
+    var PageCount = 0;
+    $(function () {
+
+        layui.use(['laypage', 'layer'], function () {
+            var laypage = layui.laypage
+                , layer = layui.layer;
+            laypage.render({
+                elem: 'demopagelist'
+                , count: 100
+                , layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']
+                , jump: function (obj) {
+                    console.log(obj)
+                }
+            });
+        });
+
+
+
+        PageList();
+
+        $("#Button1").click(function () {
+            PageIndex = 1;
+            PageList();
+        });
+        $("#Button2").click(function () {
+            PageIndex--;
+            PageList();
+        });
+        $("#Button3").click(function () {
+            PageIndex++;
+            PageList();
+        });
+        $("#Button4").click(function () {
+            PageIndex = PageCount;
+            PageList();
+        });
+    });
+    function PageList() {
+        $.ajax({
+            type: "POST",
+            url: "/LianXi/PageListAA",
+            data: "{PageIndex:" + PageIndex + ",PageSize:" + PageSize + "}",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                //获取总页数
+                PageCount = result.PageCount;
+                $("#tb1 tr").remove();
+                $.each(result.DataList, function (index, data) {
+                    $("#tb1").append("<tr><td>" + data.id + "</td><td>" + data.name + "</td><td>" + data.age + "</td><td><a href='#'>删除</a></td></tr>");
+                });
+            },
+            error: function (ex) {
+                alert(ex.responseText);
+            }
+        });
+
+    }
+</script>

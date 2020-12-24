@@ -1,0 +1,72 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>update</title>
+</head>
+<body>
+    <div>
+        <table cellpadding="0" cellspacing="0">
+            <tr><td>姓名：<input name="name" id="name" type="text" /></td></tr>
+            <tr><td>年龄：<input name="age" id="age" type="text" /></td></tr>
+        </table>
+        <input id="Submit1" type="button" value="保存"/>
+    </div>
+</body>
+</html>
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script>
+    var id = 0;
+    //窗体加载
+    $(function () {
+        id =@Request.QueryString["id"]
+            Xiu(id);
+        $("#Submit1").click(function () {
+            XiuGai(id);
+        });
+    });
+    //根据ID查询信息绑定到对应文本框
+    function Xiu(id) {
+        $.ajax({
+            type: "POST",
+            url: "/LianXi/GetById",
+            data: "{id:" + id + "}",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                $("#name").val(result[0].name);
+                $("#age").val(result[0].age);
+            },
+            error: function (ex) {
+                alert(ex.responseText);
+            }
+        });
+    }
+    //修改
+    function XiuGai(id) {
+        $.ajax({
+            type: "POST",
+            url: "/LianXi/Edit",
+            data: "{id:'" + id + "',name:'" + $("#name").val() + "',age:'" + $("#age").val() + "'}",
+            dataType: "json",
+            contentType: "application/json",
+            success: function (result) {
+                if (result > 0) {
+                    alert("修改成功！");
+                    location.href = '/LianXi/Index';
+                } else {
+                    alert("修改失败！");
+                }
+            },
+            error: function (ex) {
+                alert(ex.responseText);
+            }
+        });
+    }
+</script>
