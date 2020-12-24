@@ -27,7 +27,7 @@ namespace LianXi_AJAX_MVC.Controllers
             return View();
         }
         //修改页面试图
-        public ActionResult update()
+        public ActionResult aaaa()
         {
             return View();
         }
